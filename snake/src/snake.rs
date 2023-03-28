@@ -1,14 +1,14 @@
-use std::collection::LinkedList;
+use std::collections::LinkedList;
 use piston_window::{Context, G2d};
 use piston_window::types::Color;
 
-use draw::draw_block;
+use crate::draw::draw_block;
 
 //Snake color
 const SNAKE_COLOR: color = [0.00, 1.00, 0.00, 1.0];
 
 //Handle the direction of snake and how keyboard interact with snake
-#[derive(Copy, Clone PartialEq)]
+#[derive(Copy, Clone, PartialEq)]
 pub enum Direction {
     Up,
     Down,
@@ -42,7 +42,7 @@ pub struct Snake {
 
 //Implemetatio block for snake
 impl Snake{
-    pub fn new(x: i32, y: i32) -> {
+    pub fn new(x: i32, y: i32) -> Snake {
         let mut body: LinkedList<Block> = LinkedList::new();
         body.push_back(Block {
             x: x + 2,
@@ -123,7 +123,7 @@ impl Snake{
         match moving_dir {
             Direction::Up => (head_x, head_y - 1),
             Direction::Down => (head_x, head_y + 1),
-            Direction::Left => (head_x - 1, head),
+            Direction::Left => (head_x - 1, head_y),
             Direction::Right => (head_x + 1, head_y),
         }
     }
@@ -145,7 +145,7 @@ impl Snake{
             if ch == self.body.len() - 1 { // check 
                 break;
             }
-            return false;
         }
+        return false;
     }
 }
