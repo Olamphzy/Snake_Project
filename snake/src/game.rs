@@ -3,11 +3,11 @@ use piston_window::types::Color;
 
 use rand::{thread_rng, Rng};
 
-use snake::{Direction, Snake};
-use draw::{draw_block, draw_rectangle};
+use crate::snake::{Direction, Snake};
+use crate::draw::{draw_block, draw_rectangle};
 
-const FOOD_COLOR: Color = [0.80, 0.00 0.00, 1.0];
-const BORDER_COLOR: Color = [0.00, 0.00 0.60, 1.0];
+const FOOD_COLOR: Color = [0.80, 0.30, 0.50, 1.0];
+const BORDER_COLOR: Color = [0.00, 0.20, 0.60, 1.0];
 const GAMEOVER_COLOR: Color = [0.90, 0.00 0.00, 0.5];
 
 const MOVING_PERIOD: f64 = 0.1;  //frame which snake moves
@@ -28,7 +28,7 @@ pub struct Game {
 }
 
 impl Game {
-    pub fn new(width: i32, height: i32) -> {
+    pub fn new(width: i32, height: i32) -> Game {
         Game {
             snake: Snake::new(2, 2),
             waiting_time: 0.0,
@@ -37,11 +37,11 @@ impl Game {
             food_y: 4,
             width,
             height,
-            game_over: false
+            game_over: false,
         }
     }
 
-    pub fn key_pressed(&mut self, key: key) {
+    pub fn key_pressed(&mut self, key: Key) {
         if self.game_over{
             return;
         }
@@ -51,12 +51,15 @@ impl Game {
             Key::Down => Some(Direction::Down),
             Key::Left => Some(Direction::Left),
             Key::Right => Some(Direction::Right),
-            _ => None
+            _ => Some(self.snake.head_direction()),
         };
 
-        if dir.unwrap() == self.snake.head_direction().opposite() {
-            return;
+        if let Some(dir) = dir {
+            if dir == self.snake.head_direction().opposite() {
+                return;
+            }
         }
+
         self.update_snake(dir);
     }
 
@@ -68,10 +71,11 @@ impl Game {
         }
 
         draw_rectangle(BORDER_COLOR, 0, 0, self.width, 1, con, g);
-        draw_rectangle(BORDER_COLOR, 0, 0, self.height - 1, self.width, 1, con, g);
+        draw_rectangle(BORDER_COLOR, 0, self.height - 1, self.width, 1, con, g);
         draw_rectangle(BORDER_COLOR, 0, 0, 1, self.height, con, g);
         draw_rectangle(BORDER_COLOR, self.width - 1, 0, 1, self.height, con, g);
 
+// Set Game Over
         if self.game_over {
             draw_rectangle(GAMEOVER_COLOR, 0, 0, self.width, self.height, con, g);
         }
@@ -106,7 +110,7 @@ impl Game {
         }
     }
 
-    fn check_if_snake_alive($self, dir: Option<Direction>) -> bool {
+    fn check_if_snake_alive(&self, dir: Option<Direction>) -> bool {
         let (next_x, next_y) = self.snake.next_head(dir);
 
         if self.snake.overlap_tail(next_x, next_y) {
@@ -121,11 +125,11 @@ impl Game {
     fn add_food(&mut self) {
         let mut rng = thread_rng();
 
-        let mut new_x = rng.gen_range(1, self.width - 1);
-        let mut new_y = rng.gen_range(1, self.height - 1);
+        let mut new_x = rng.gen_range(1..self.width - 1);
+        let mut new_y = rng.gen_range(1..self.height - 1);
         while self.snake.overlap_tail(new_x, new_y) {
-            new_x = rng.gen_range(1, self.width - 1);
-            new_y = rng.gen_range(1, self.width - 1);
+            new_x = rng.gen_range(1..self.width - 1);
+            new_y = rng.gen_range(1.self.width - 1);
         }
 
         self.food_x = new_x;
