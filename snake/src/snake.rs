@@ -4,8 +4,8 @@ use piston_window::types::Color;
 
 use crate::draw::draw_block;
 
-//Snake color
-const SNAKE_COLOR: color = [0.00, 1.00, 0.00, 1.0];
+//Snake Color
+const SNAKE_COLOR: Color = [0.00, 1.00, 0.00, 1.0];
 
 //Handle the direction of snake and how keyboard interact with snake
 #[derive(Copy, Clone, PartialEq)]
@@ -15,10 +15,11 @@ pub enum Direction {
     Left,
     Right,
 }
-   //impl a method for enum. Is method that match the direction that if the snake goes up and down is hit, it won't go down
+
+// Implement method for enum Is method that match the description that if the snake goes up and down is hit, it won't go down
 impl Direction {
     pub fn opposite(&self) -> Direction {
-        match *self{
+        match *self {
             Direction::Up => Direction::Down,
             Direction::Down => Direction::Up,
             Direction::Left => Direction::Right,
@@ -26,8 +27,6 @@ impl Direction {
         }
     }
 }
-
-//block type
 #[derive(Debug, Clone)]
 struct Block {
     x: i32,
@@ -40,8 +39,8 @@ pub struct Snake {
     tail: Option<Block>,
 }
 
-//Implemetatio block for snake
-impl Snake{
+// Implementation block for snake
+impl Snake {
     pub fn new(x: i32, y: i32) -> Snake {
         let mut body: LinkedList<Block> = LinkedList::new();
         body.push_back(Block {
@@ -56,9 +55,9 @@ impl Snake{
             x,
             y,
         });
-
-        Snake {   //Snake will be horinzontal with x and y coordinates 
-            direction: Direction::Right, // Starting moving in direction of right anx taill will be none
+    // Snake will be horinzontal with x and y coordinates
+        Snake {
+            direction: Direction::Right,  // Starting moving in direction of right and tail will be None
             body,
             tail: None,
         }
@@ -66,7 +65,7 @@ impl Snake{
 
     pub fn draw(&self, con: &Context, g: &mut G2d) {
         for block in &self.body {
-            draw_block(SNAKE_COLOR, block.x, block.y, con, g);  // Thois will render out a greenn snake
+            draw_block(SNAKE_COLOR, block.x, block.y, con, g);  //This will render out a green snake
         }
     }
 
@@ -96,12 +95,11 @@ impl Snake{
                 x: last_x - 1,
                 y: last_y,
             },
-            Direction::Up => Block {
+            Direction::Right => Block {
                 x: last_x + 1,
                 y: last_y,
             },
         };
-
         self.body.push_front(new_block);
         let removed_block = self.body.pop_back().unwrap();
         self.tail = Some(removed_block);
@@ -135,14 +133,13 @@ impl Snake{
 
     pub fn overlap_tail(&self, x: i32, y: i32) -> bool {
         let mut ch = 0;
-
         for block in &self.body {
-            if x == block.x && y == block.y { // if snak is overlap any part of its body
+            if x == block.x && y == block.y {  // if snake is overlap any part of its body
                 return true;
-            } 
+            }
 
             ch += 1;
-            if ch == self.body.len() - 1 { // check 
+            if ch == self.body.len() - 1 { // check snake length
                 break;
             }
         }
