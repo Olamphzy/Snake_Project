@@ -29,7 +29,7 @@ pub fn draw_rectangle(
     y: i32,
     width: i32,
     height: i32,
-    con: &Contact,
+    con: &Context,
     g: &mut G2d,
 ) {
     let x = to_coord(x);
