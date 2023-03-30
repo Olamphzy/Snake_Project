@@ -1,11 +1,11 @@
-use std::collections::LinkedList;
+use std::collections::LinkedList;   
 use piston_window::{Context, G2d};
 use piston_window::types::Color;
 
-use crate::draw::draw_block;
+use crate::draw::draw_block;  //bring in draw_block from draw.rs file
 
 //Snake Color
-const SNAKE_COLOR: Color = [0.00, 1.00, 0.00, 1.0];
+const SNAKE_COLOR: Color = [0.00, 1.00, 0.00, 1.0];  //Green snake with 1.0 opaity
 
 //Handle the direction of snake and how keyboard interact with snake
 #[derive(Copy, Clone, PartialEq)]
@@ -16,7 +16,7 @@ pub enum Direction {
     Right,
 }
 
-// Implement method for enum Is method that match the description that if the snake goes up and down is hit, it won't go down
+// Implement method for enum Is method that match the description that if the snake goes up and down is hit down arrow, it won't go down
 impl Direction {
     pub fn opposite(&self) -> Direction {
         match *self {
@@ -28,7 +28,7 @@ impl Direction {
     }
 }
 #[derive(Debug, Clone)]
-struct Block {
+struct Block {  // doesn't need to be public
     x: i32,
     y: i32,
 }
@@ -36,7 +36,7 @@ struct Block {
 pub struct Snake {
     direction: Direction,
     body: LinkedList<Block>,
-    tail: Option<Block>,
+    tail: Option<Block>,  //tail will be actual value when it eat an apple
 }
 
 // Implementation block for snake
@@ -46,7 +46,7 @@ impl Snake {
         body.push_back(Block {
             x: x + 2,
             y,
-        });
+        });  // when will start game snake will be length of 3 with horizntal, moving to the right
         body.push_back(Block {
             x: x + 1,
             y,
@@ -64,13 +64,13 @@ impl Snake {
     }
 
     pub fn draw(&self, con: &Context, g: &mut G2d) {
-        for block in &self.body {
+        for block in &self.body { //iterate through list
             draw_block(SNAKE_COLOR, block.x, block.y, con, g);  //This will render out a green snake
         }
     }
 
-    pub fn head_position(&self) -> (i32, i32) {
-        let head_block = self.body.front().unwrap();
+    pub fn head_position(&self) -> (i32, i32) { //tuple of i32
+        let head_block = self.body.front().unwrap(); 
         (head_block.x, head_block.y)
     }
 
@@ -85,7 +85,7 @@ impl Snake {
         let new_block = match self.direction {
             Direction::Up => Block {
                 x: last_x,
-                y: last_y - 1,
+                y: last_y - 1, //move forward in negative y axes
             },
             Direction::Down => Block {
                 x: last_x,
@@ -101,7 +101,7 @@ impl Snake {
             },
         };
         self.body.push_front(new_block);
-        let removed_block = self.body.pop_back().unwrap();
+        let removed_block = self.body.pop_back().unwrap();  //unwrap so we don't have an error
         self.tail = Some(removed_block);
     }
 
@@ -128,7 +128,7 @@ impl Snake {
 
     pub fn restore_tail(&mut self) {
         let blk = self.tail.clone().unwrap();
-        self.body.push_back(blk);
+        self.body.push_back(blk); //if we eat apple this method will be called with snake length increase
     }
 
     pub fn overlap_tail(&self, x: i32, y: i32) -> bool {
@@ -139,7 +139,7 @@ impl Snake {
             }
 
             ch += 1;
-            if ch == self.body.len() - 1 { // check snake length
+            if ch == self.body.len() - 1 { // check snake length where the tail and head exist
                 break;
             }
         }
