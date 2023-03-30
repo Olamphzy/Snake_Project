@@ -24,7 +24,7 @@ fn main() {
         .unwrap();
 
     let mut game = Game::new(width, height);
-    while let Some(event) = window.next() {
+    while let Some(event) = window.next() { //clean window every time snake move
         if let Some(Button::Keyboard(key)) = event.press_args() {
             game.key_pressed(key);
         }
