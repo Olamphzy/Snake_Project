@@ -1,5 +1,5 @@
 use piston_window::types::Color;
-use piston_window::*;
+use piston_window::*;  //* means we're importing everthing in the namespace
 
 use rand::{thread_rng, Rng};
 
@@ -10,7 +10,7 @@ const FOOD_COLOR: Color = [0.90, 0.00, 0.00, 1.0];
 const BORDER_COLOR: Color = [0.00, 0.00, 0.00, 1.0];
 const GAMEOVER_COLOR: Color = [0.90, 0.00, 0.00, 0.8];
 
-const MOVING_PERIOD: f64 = 0.1; //frame which snake move
+const MOVING_PERIOD: f64 = 0.1; //frame per secs which snake move
 const RESTART_TIME: f64 = 1.0;
 
 pub struct Game {
@@ -30,7 +30,7 @@ pub struct Game {
 impl Game {
     pub fn new(width: i32, height: i32) -> Game {
         Game {
-            snake: Snake::new(2, 2),
+            snake: Snake::new(2, 2), //snake will start around corner
             waiting_time: 0.0,
             food_exists: true,
             food_x: 6,
